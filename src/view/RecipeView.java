@@ -15,14 +15,16 @@ public class RecipeView {
     private JTextArea instructionsArea;
     private JTextField categoryField;
     private JTextField searchField;
+    private JTextField deleteIdField; // Added for delete functionality
     private JButton addButton;
     private JButton searchButton;
+    private JButton deleteButton; // Added for delete functionality
     private JTextArea resultArea;
 
     public RecipeView(RecipeController recipeController) {
         this.recipeController = recipeController;
         frame = new JFrame("Recipe Manager");
-        frame.setSize(600, 400);
+        frame.setSize(600, 500); // Increased size to accommodate delete button
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -78,6 +80,19 @@ public class RecipeView {
         resultArea.setBounds(300, 100, 240, 175);
         frame.add(resultArea);
 
+        // Added for delete functionality
+        JLabel deleteIdLabel = new JLabel("Delete ID:");
+        deleteIdLabel.setBounds(20, 320, 80, 25);
+        frame.add(deleteIdLabel);
+
+        deleteIdField = new JTextField(20);
+        deleteIdField.setBounds(100, 320, 160, 25);
+        frame.add(deleteIdField);
+
+        deleteButton = new JButton("Delete Recipe");
+        deleteButton.setBounds(20, 360, 240, 25);
+        frame.add(deleteButton);
+
         frame.setVisible(true);
 
         addButton.addActionListener(new ActionListener() {
@@ -108,6 +123,20 @@ public class RecipeView {
                     results.append("Category: ").append(recipe.getCategory()).append("\n\n");
                 }
                 resultArea.setText(results.toString());
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String idStr = deleteIdField.getText();
+                try {
+                    int id = Integer.parseInt(idStr);
+                    recipeController.deleteRecipe(id);
+                    JOptionPane.showMessageDialog(frame, "Recipe deleted successfully!");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format.");
+                }
             }
         });
     }
